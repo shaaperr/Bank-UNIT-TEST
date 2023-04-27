@@ -61,40 +61,44 @@ namespace BankTest
         }
 
         [TestMethod]
+        
         public void Credit_AccountFrozen()
         {
             // arrange  
             double beginningBalance = 11.99;
             double creditAmount = 4.55;
-            double expected = 7.44;
-            double actual = 0.00;
             BankAccount account = new BankAccount("Mr. Bryan Walton", beginningBalance);
-            
-            //act
-            account.Credit(creditAmount);
 
-           
-            
+            // act
+            account.ToggleFreeze();
+            try
+            {
+                account.Credit(creditAmount);
+                Assert.Fail("No exception was thrown.");
+            }
+            catch (Exception e)
+            {
                 // assert  
-                Assert.AreEqual(expected, actual, "Account is frozen!");
+                StringAssert.Contains(e.Message, BankAccount.CreditAmountIsFrozen);
                 return;
-            
+            }
         }
 
-            [TestMethod]
+
+        [TestMethod]
             public void CreditAmountIsNegative()
             {
                 // arrange  
                 double beginningBalance = 0.00;
-                double creditAmount = 4.55;
+                double creditAmount = -4.55;
                 BankAccount account = new BankAccount("Mr. Bryan Walton", beginningBalance);
 
             // act  
-            account.Debit(creditAmount);
-
             try
             {
-                account.Debit(creditAmount);
+                account.Credit(creditAmount);
+            Assert.Fail("No exception was thrown.");
+
             }
             catch (ArgumentOutOfRangeException e)
             {
@@ -102,7 +106,6 @@ namespace BankTest
                 StringAssert.Contains(e.Message, BankAccount.CreditAmountIsNegative);
                 return;
             }
-            Assert.Fail("No exception was thrown.");
 
 
             }
